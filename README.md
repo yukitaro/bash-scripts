@@ -30,7 +30,7 @@ In the batch of photos that I was working on, I found the following three locati
     exif:DateTimeOriginal: 2021-03-17T00:00:00Z
 ``` 
 
-The `DateTimeOriginal` and `date:modify` seem to have the same date and the format here is `YYYY-MM-DDTHH:MM:SSZ` or `YYYY-MM-DDTHH:MM+MS`
+The `DateTimeOriginal` and `date:modify` seem to have the same date and the format here is `YYYY-MM-DDTHH:MM:SSZ` or `YYYY-MM-DDTHH:MM+SS:MS`
 
 ### All 3 in one file
 ``` 
@@ -54,8 +54,14 @@ I think there were photos where only one of the three existed, so the logic I im
 * Ran into lots of difficulties initially because of spaces in filenames. This is an informative post on [why looping over find output is bad practice.](https://unix.stackexchange.com/questions/321697/why-is-looping-over-finds-output-bad-practice)
    * This helped me arrive at my final solution of calling the script from in the recommended way like this:
    ```
-   find ./ -type f \( -iname \*.jpg \) -exec sh -c 'for f do ../touch6.sh "$f"; done' find-sh {} \;
+   find ./ -type f \( -iname \*.jpg \) -exec sh -c 'for f do ../touch_exif_photos.sh "$f"; done' find-sh {} \;
    ```
+
+   * Additionally, the syntax for doing this for multiple filetypes would look like this:
+   ```
+   find ./ -type f \( -iname \*.jpg -o -name \*.png -o -name '\*.JPG のコピー' \) -exec sh -c 'for f do ../touch_exif_photos.sh "$f"; done' find-sh {} \;
+   ```
+   
 
 * Chaining `grep` and `sed`, using `xargs` & `exec` have lots of gotchas and intricacies, but I like the way I ended up with one pipeline to extract out the date. I'm sure there are are more clever (and just better) ways of getting it out, which may properly consider the structure of the exif metadata, etc.
 
